@@ -30,6 +30,7 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cmb_Vehicle_type = new System.Windows.Forms.ComboBox();
+            this.txt_Hours_Parked = new System.Windows.Forms.TextBox();
             this.txt_Platenum = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -96,7 +97,8 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.txt_Hours_Parked = new System.Windows.Forms.TextBox();
+            this.txt_AssignedSlot = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -108,6 +110,8 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.groupBox1.Controls.Add(this.label16);
+            this.groupBox1.Controls.Add(this.txt_AssignedSlot);
             this.groupBox1.Controls.Add(this.cmb_Vehicle_type);
             this.groupBox1.Controls.Add(this.txt_Hours_Parked);
             this.groupBox1.Controls.Add(this.txt_Platenum);
@@ -128,11 +132,20 @@
             "Motorcycle",
             "Car",
             "Van"});
-            this.cmb_Vehicle_type.Location = new System.Drawing.Point(30, 131);
+            this.cmb_Vehicle_type.Location = new System.Drawing.Point(32, 109);
             this.cmb_Vehicle_type.Name = "cmb_Vehicle_type";
             this.cmb_Vehicle_type.Size = new System.Drawing.Size(148, 21);
             this.cmb_Vehicle_type.TabIndex = 8;
             this.cmb_Vehicle_type.SelectedIndexChanged += new System.EventHandler(this.cmb_Vehicle_type_SelectedIndexChanged);
+            // 
+            // txt_Hours_Parked
+            // 
+            this.txt_Hours_Parked.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Hours_Parked.Location = new System.Drawing.Point(30, 149);
+            this.txt_Hours_Parked.Multiline = true;
+            this.txt_Hours_Parked.Name = "txt_Hours_Parked";
+            this.txt_Hours_Parked.Size = new System.Drawing.Size(148, 39);
+            this.txt_Hours_Parked.TabIndex = 6;
             // 
             // txt_Platenum
             // 
@@ -146,7 +159,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 107);
+            this.label4.Location = new System.Drawing.Point(29, 87);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 2;
@@ -155,7 +168,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(27, 183);
+            this.label3.Location = new System.Drawing.Point(29, 133);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(72, 13);
             this.label3.TabIndex = 1;
@@ -862,14 +875,23 @@
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Vehice Registration";
             // 
-            // txt_Hours_Parked
+            // txt_AssignedSlot
             // 
-            this.txt_Hours_Parked.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Hours_Parked.Location = new System.Drawing.Point(30, 199);
-            this.txt_Hours_Parked.Multiline = true;
-            this.txt_Hours_Parked.Name = "txt_Hours_Parked";
-            this.txt_Hours_Parked.Size = new System.Drawing.Size(148, 39);
-            this.txt_Hours_Parked.TabIndex = 6;
+            this.txt_AssignedSlot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_AssignedSlot.Location = new System.Drawing.Point(30, 215);
+            this.txt_AssignedSlot.Multiline = true;
+            this.txt_AssignedSlot.Name = "txt_AssignedSlot";
+            this.txt_AssignedSlot.Size = new System.Drawing.Size(148, 39);
+            this.txt_AssignedSlot.TabIndex = 9;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(29, 195);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(71, 13);
+            this.label16.TabIndex = 10;
+            this.label16.Text = "Assigned Slot";
             // 
             // Form1
             // 
@@ -974,6 +996,8 @@
         private System.Windows.Forms.TextBox txt_payed_amount;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox txt_Hours_Parked;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox txt_AssignedSlot;
     }
 }
 
