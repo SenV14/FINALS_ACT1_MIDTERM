@@ -129,8 +129,24 @@ namespace FINALS_ACT1_MIDTERM
                 return;
             }
 
-            // find first available slot
-            var slot = slotButtons.FirstOrDefault(b => b.BackColor == System.Drawing.Color.FromArgb(128, 255, 128));
+            // if user already selected a slot in the UI, try to use that first
+            Button slot = null;
+            var selectedSlotText = txt_Current_slot.Text.Trim();
+            if (!string.IsNullOrEmpty(selectedSlotText))
+            {
+                slot = slotButtons.FirstOrDefault(b => string.Equals(b.Text, selectedSlotText, StringComparison.OrdinalIgnoreCase));
+                // if selected slot is occupied, ignore and find first available instead
+                if (slot != null && slot.BackColor != System.Drawing.Color.FromArgb(128, 255, 128))
+                {
+                    slot = null;
+                }
+            }
+
+            // find first available slot if none selected or selected was occupied
+            if (slot == null)
+            {
+                slot = slotButtons.FirstOrDefault(b => b.BackColor == System.Drawing.Color.FromArgb(128, 255, 128));
+            }
             if (slot == null)
             {
                 MessageBox.Show("No available slots.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -164,7 +180,7 @@ namespace FINALS_ACT1_MIDTERM
         private void SlotButton_Click(object sender, EventArgs e)
         {
             if (!(sender is Button b)) return;
-            // show details if occupied
+            // if occupied show details
             if (_parked.TryGetValue(b.Text, out var reg))
             {
                 txt_Current_platenum.Text = reg.Plate_number;
@@ -175,16 +191,37 @@ namespace FINALS_ACT1_MIDTERM
                 var overtime = 0m;
                 if (reg.Hours_Parked > 24) overtime = OvertimeRatePerHour * (reg.Hours_Parked - 24);
                 txt_Current_overtime_fee.Text = overtime.ToString("0.00");
+                return;
             }
-            else
+
+            // if free and user has filled registration fields, register directly to this slot
+            var plateText = txt_Platenum.Text.Trim();
+            var typeText = cmb_Vehicle_type.Text.Trim();
+            var hoursText = txt_Hours_Parked.Text.Trim();
+            if (!string.IsNullOrEmpty(plateText) && !string.IsNullOrEmpty(typeText) && int.TryParse(hoursText, out var h) && h >= 0)
             {
-                // clear current display
-                txt_Current_platenum.Clear();
-                txt_Current_Vehicle_info.Clear();
-                txt_Current_duration.Clear();
-                txt_Current_slot.Clear();
-                txt_Current_overtime_fee.Clear();
+                var regNew = new Parking_Registration_Calculation(plateText, typeText, h);
+                _parked[b.Text] = regNew;
+                b.BackColor = System.Drawing.Color.FromArgb(255, 128, 128);
+                txt_Current_platenum.Text = regNew.Plate_number;
+                txt_Current_Vehicle_info.Text = regNew.Vehicle_model;
+                txt_Current_duration.Text = regNew.Hours_Parked.ToString();
+                txt_Current_slot.Text = b.Text;
+                var overtime = 0m;
+                if (regNew.Hours_Parked > 24) overtime = OvertimeRatePerHour * (regNew.Hours_Parked - 24);
+                txt_Current_overtime_fee.Text = overtime.ToString("0.00");
+                txt_fee_plate.Text = regNew.Plate_number;
+                txt_fee_vehicle_info.Text = regNew.Vehicle_model;
+                txt_fee_duration.Text = regNew.Hours_Parked.ToString();
+                return;
             }
+
+            // otherwise simply select the slot for later registration
+            txt_Current_slot.Text = b.Text;
+            txt_Current_platenum.Clear();
+            txt_Current_Vehicle_info.Clear();
+            txt_Current_duration.Clear();
+            txt_Current_overtime_fee.Clear();
         }
 
         private void Btn_Update_Status_Click(object sender, EventArgs e)
@@ -244,6 +281,29 @@ namespace FINALS_ACT1_MIDTERM
 
             var change = paid - total;
             MessageBox.Show($"Payment successful. Change: {change:0.00}", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // if there's an assigned slot for this transaction, free it after successful payment
+            var slot = txt_Current_slot.Text.Trim();
+            if (!string.IsNullOrEmpty(slot) && _parked.ContainsKey(slot))
+            {
+                _parked.Remove(slot);
+                var b = slotButtons.FirstOrDefault(x => x.Text == slot);
+                if (b != null)
+                {
+                    b.BackColor = System.Drawing.Color.FromArgb(128, 255, 128); // available
+                }
+            }
+
+            // clear current and fee displays after payment
+            txt_Current_platenum.Clear();
+            txt_Current_Vehicle_info.Clear();
+            txt_Current_duration.Clear();
+            txt_Current_slot.Clear();
+            txt_Current_overtime_fee.Clear();
+            txt_fee_plate.Clear();
+            txt_fee_vehicle_info.Clear();
+            txt_fee_duration.Clear();
+            txt_payed_amount.Clear();
         }
 
         private void Btn_generate_receipt_Click(object sender, EventArgs e)
@@ -251,6 +311,7 @@ namespace FINALS_ACT1_MIDTERM
             if (string.IsNullOrEmpty(txt_fee_plate.Text)) return;
             var sb = new StringBuilder();
             sb.AppendLine("-- Parking Receipt --");
+            sb.AppendLine($"Slot: {txt_Current_slot.Text}");
             sb.AppendLine($"Plate: {txt_fee_plate.Text}");
             sb.AppendLine($"Vehicle: {txt_fee_vehicle_info.Text}");
             sb.AppendLine($"Duration: {txt_fee_duration.Text} hours");
